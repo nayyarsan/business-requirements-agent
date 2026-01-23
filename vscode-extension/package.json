@@ -5,7 +5,6 @@
   "version": "0.1.0",
   "publisher": "your-publisher-name",
   "type": "module",
-  "icon": "icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
