@@ -1,0 +1,10 @@
+body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;background:#f7f7fb}
+.container{max-width:800px;margin:32px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+h1{margin:0 0 12px}
+.chat{height:420px;overflow:auto;border:1px solid #eee;padding:12px;border-radius:6px;background:#fafafa}
+.msg{padding:8px 10px;margin:8px 0;border-radius:6px;white-space:pre-wrap}
+.msg.user{background:#e6f0ff;align-self:flex-end}
+.msg.agent{background:#f1f1f5}
+#inputForm{display:flex;margin-top:12px;gap:8px}
+#message{flex:1;height:80px;padding:8px;border:1px solid #ddd;border-radius:6px}
+button{padding:8px 14px;border-radius:6px;border:0;background:#0366d6;color:#fff}

@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="{{CSP}}" />
+    <title>BRD Creator</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: var(--vscode-font-family);
+        color: var(--vscode-foreground);
+        background: var(--vscode-editor-background);
+      }
+
+      header {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--vscode-panel-border);
+        background: var(--vscode-sideBar-background);
+      }
+
+      header .title {
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+      header .meta {
+        font-size: 12px;
+        color: var(--vscode-descriptionForeground);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 60vw;
+      }
+
+      main {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 240px 1fr 1fr;
+      }
+
+      aside {
+        border-right: 1px solid var(--vscode-panel-border);
+        background: var(--vscode-sideBar-background);
+        padding: 12px;
+        overflow: auto;
+      }
+
+      .section-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--vscode-descriptionForeground);
+        margin: 14px 0 8px;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--vscode-input-border);
+        background: var(--vscode-input-background);
+        color: var(--vscode-input-foreground);
+        border-radius: 8px;
+        padding: 10px 10px;
+        cursor: pointer;
+        margin: 6px 0;
+      }
+      .btn:hover {
+        background: color-mix(in srgb, var(--vscode-input-background) 88%, var(--vscode-foreground));
+      }
+      .btn.primary {
+        background: var(--vscode-button-background);
+        color: var(--vscode-button-foreground);
+        border-color: var(--vscode-button-background);
+      }
+      .btn.primary:hover {
+        background: var(--vscode-button-hoverBackground);
+      }
+      .btn.small {
+        width: auto;
+        padding: 7px 10px;
+        margin: 0;
+      }
+
+      .pane {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+      }
+
+      .pane-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--vscode-panel-border);
+        background: var(--vscode-editor-background);
+      }
+      .pane-header .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .pane-header .right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--vscode-panel-border);
+        font-size: 11px;
+        color: var(--vscode-descriptionForeground);
+        white-space: nowrap;
+      }
+
+      .chat {
+        border-right: 1px solid var(--vscode-panel-border);
+      }
+
+      .scroll {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        padding: 12px;
+      }
+
+      .msg {
+        display: flex;
+        margin: 10px 0;
+      }
+      .msg.user {
+        justify-content: flex-end;
+      }
+      .bubble {
+        max-width: 85%;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--vscode-panel-border);
+        white-space: pre-wrap;
+        line-height: 1.35;
+      }
+      .bubble.user {
+        background: var(--vscode-button-background);
+        color: var(--vscode-button-foreground);
+        border-color: var(--vscode-button-background);
+        border-top-right-radius: 4px;
+      }
+      .bubble.agent {
+        background: var(--vscode-input-background);
+        color: var(--vscode-foreground);
+        border-top-left-radius: 4px;
+      }
+      .bubble.error {
+        background: color-mix(in srgb, var(--vscode-input-background) 70%, #ff0000);
+      }
+
+      .composer {
+        padding: 12px;
+        border-top: 1px solid var(--vscode-panel-border);
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+      textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 70px;
+        max-height: 240px;
+        border-radius: 10px;
+        border: 1px solid var(--vscode-input-border);
+        background: var(--vscode-input-background);
+        color: var(--vscode-input-foreground);
+        padding: 10px;
+        font-family: var(--vscode-font-family);
+      }
+
+      .doc {
+        background: var(--vscode-editor-background);
+      }
+
+      .doc-body {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .toolbar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--vscode-panel-border);
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        overflow: auto;
+        padding-bottom: 2px;
+        flex: 1;
+      }
+      .tab {
+        border: 1px solid var(--vscode-panel-border);
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--vscode-foreground);
+        white-space: nowrap;
+      }
+      .tab.active {
+        background: var(--vscode-button-background);
+        color: var(--vscode-button-foreground);
+        border-color: var(--vscode-button-background);
+      }
+
+      .doc-pane {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        padding: 12px;
+      }
+
+      .doc-pane h1 {
+        font-size: 22px;
+        margin: 14px 0 8px;
+      }
+      .doc-pane h2 {
+        font-size: 18px;
+        margin: 14px 0 8px;
+      }
+      .doc-pane h3 {
+        font-size: 15px;
+        margin: 12px 0 6px;
+      }
+      .doc-pane p {
+        margin: 6px 0;
+      }
+      .doc-pane ul,
+      .doc-pane ol {
+        margin: 6px 0 6px 18px;
+      }
+      .doc-pane pre {
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid var(--vscode-panel-border);
+        overflow: auto;
+      }
+      .doc-pane code {
+        font-family: var(--vscode-editor-font-family);
+      }
+      .doc-pane hr {
+        border: none;
+        border-top: 1px solid var(--vscode-panel-border);
+        margin: 12px 0;
+      }
+
+      .diff-added {
+        background: color-mix(in srgb, #00ff00 20%, transparent);
+      }
+      .diff-removed {
+        background: color-mix(in srgb, #ff0000 18%, transparent);
+        text-decoration: line-through;
+      }
+
+      .questions {
+        border-top: 1px solid var(--vscode-panel-border);
+        padding: 12px;
+        max-height: 38vh;
+        overflow: auto;
+      }
+      .questions.collapsed {
+        max-height: 48px;
+        overflow: hidden;
+      }
+      .questions .questions-header {
+        position: sticky;
+        top: 0;
+        background: var(--vscode-editor-background);
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--vscode-panel-border);
+        z-index: 1;
+      }
+      .qgrid {
+        display: grid;
+        gap: 10px;
+      }
+      .qgrid label {
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .qgrid .help {
+        font-size: 11px;
+        color: var(--vscode-descriptionForeground);
+        margin-top: 4px;
+      }
+      .qgrid textarea {
+        min-height: 54px;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .toggle {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 12px;
+        color: var(--vscode-descriptionForeground);
+        user-select: none;
+      }
+      .toggle input {
+        transform: translateY(1px);
+      }
+
+      @media (max-width: 1024px) {
+        main {
+          grid-template-columns: 240px 1fr;
+          grid-template-rows: 1fr 1fr;
+        }
+        .doc {
+          grid-column: 2;
+          grid-row: 2;
+        }
+        .chat {
+          grid-column: 2;
+          grid-row: 1;
+          border-right: none;
+          border-bottom: 1px solid var(--vscode-panel-border);
+        }
+      }
+      @media (max-width: 780px) {
+        main {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr 1fr;
+        }
+        aside {
+          border-right: none;
+          border-bottom: 1px solid var(--vscode-panel-border);
+        }
+        .chat {
+          grid-column: 1;
+          grid-row: 2;
+        }
+        .doc {
+          grid-column: 1;
+          grid-row: 3;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">BRD Creator</div>
+      <div class="meta">
+        <span id="engineStatus">AI Engine</span>
+        <span> • </span>
+        <span id="sessionStatus">Session: -</span>
+        <span> • </span>
+        <span id="versionTag">v0.1</span>
+      </div>
+    </header>
+
+    <main>
+      <aside>
+        <div class="section-title">Templates</div>
+        <button class="btn" type="button" data-template="ecommerce">E-commerce App</button>
+        <button class="btn" type="button" data-template="fintech">Fintech Platform</button>
+        <button class="btn" type="button" data-template="saas">SaaS Portal</button>
+
+        <div class="section-title">Quick Actions</div>
+        <button class="btn" type="button" data-quick="gather">Gather Requirements</button>
+        <button class="btn" type="button" data-quick="brief">Generate BRD Brief</button>
+        <button class="btn" type="button" data-quick="brd">Generate Full BRD</button>
+
+        <div class="section-title">Project</div>
+        <button class="btn primary" type="button" id="newProject">New Project</button>
+      </aside>
+
+      <section class="pane chat">
+        <div class="pane-header">
+          <div class="left"><span class="chip">Chat</span></div>
+          <div class="right"><span class="chip">Tip: use <b>/ask</b> to chat without updating</span></div>
+        </div>
+        <div class="scroll" id="chatMessages"></div>
+        <form class="composer" id="inputForm">
+          <textarea id="promptInput" placeholder="Share your initiative in 2–5 sentences (who it’s for, what problem, desired outcome)…"></textarea>
+          <button class="btn small primary" id="sendBtn" type="submit">Send</button>
+        </form>
+      </section>
+
+      <section class="pane doc">
+        <div class="pane-header">
+          <div class="left">
+            <span class="chip">Preview</span>
+            <span class="chip" id="checklist">RAG: -</span>
+          </div>
+          <div class="right row">
+            <label class="toggle"><input id="diffToggle" type="checkbox" /> Diff view</label>
+            <button class="btn small" id="downloadBtn" type="button">Download</button>
+          </div>
+        </div>
+
+        <div class="toolbar-row">
+          <div class="section-title" style="margin:0">Versions</div>
+          <div class="tabs" id="versionTabs"></div>
+        </div>
+
+        <div class="doc-body" style="flex:1; min-height:0;">
+          <div class="doc-pane" id="docContainer">
+            <div class="normal-view" id="docNormal"></div>
+            <div class="diff-view" id="docDiff" style="display:none"></div>
+          </div>
+
+          <div class="questions">
+            <div class="row questions-header" style="justify-content: space-between;">
+              <div class="section-title" style="margin:0">Open Questions</div>
+              <div class="row" style="gap:8px">
+                <button class="btn small" id="toggleQuestionsBtn" type="button" title="Collapse/expand questions">Collapse</button>
+                <button class="btn small primary" id="applyAnswersBtn" type="button" style="display:none">Apply Answers</button>
+              </div>
+            </div>
+            <div class="qgrid" id="questionsForm"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script nonce="{{NONCE}}">
+      const vscode = acquireVsCodeApi();
+
+      const chat = document.getElementById('chatMessages');
+      const form = document.getElementById('inputForm');
+      const promptInput = document.getElementById('promptInput');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const docNormal = document.getElementById('docNormal');
+      const docDiff = document.getElementById('docDiff');
+      const engineStatus = document.getElementById('engineStatus');
+      const sessionStatus = document.getElementById('sessionStatus');
+      const versionTabs = document.getElementById('versionTabs');
+      const checklist = document.getElementById('checklist');
+      const versionTag = document.getElementById('versionTag');
+      const questionsForm = document.getElementById('questionsForm');
+      const applyAnswersBtn = document.getElementById('applyAnswersBtn');
+      const toggleQuestionsBtn = document.getElementById('toggleQuestionsBtn');
+      const diffToggle = document.getElementById('diffToggle');
+      const questionsPanel = document.querySelector('.questions');
+
+      let lastDocText = '';
+      let currentDocText = '';
+      let versions = [];
+      let activeVersionId = null;
+      let pendingQuestions = [];
+      let waiting = false;
+
+      function loadState() {
+        const state = vscode.getState() || {};
+        lastDocText = typeof state.lastDocText === 'string' ? state.lastDocText : '';
+        currentDocText = typeof state.currentDocText === 'string' ? state.currentDocText : '';
+        versions = Array.isArray(state.versions) ? state.versions : [];
+        activeVersionId = typeof state.activeVersionId === 'string' ? state.activeVersionId : null;
+      }
+      function saveState() {
+        vscode.setState({ lastDocText, currentDocText, versions, activeVersionId });
+      }
+
+      function escapeHtml(text) {
+        return String(text || '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      function looksLikeMarkdownDoc(text) {
+        if (!text) return false;
+        if (text.includes('\n# ') || text.startsWith('# ')) return true;
+        if (text.includes('\n## ')) return true;
+        if (text.toLowerCase().includes('business requirement document')) return true;
+        if (/^\s*##?\s*\d+\./m.test(text)) return true;
+        return false;
+      }
+
+      function tryExtractJson(text) {
+        const raw = String(text || '').trim();
+        if (!raw) return null;
+        const fenced = raw.match(/```json\s*([\s\S]*?)\s*```/i);
+        const candidate = fenced ? fenced[1].trim() : raw;
+        const firstBrace = candidate.indexOf('{');
+        const lastBrace = candidate.lastIndexOf('}');
+        const maybe = firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace ? candidate.slice(firstBrace, lastBrace + 1) : candidate;
+        try {
+          const parsed = JSON.parse(maybe);
+          return parsed && typeof parsed === 'object' ? parsed : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function normalizeQuestions(q) {
+        if (!q) return [];
+        if (Array.isArray(q)) {
+          return q
+            .map((item, idx) => {
+              if (typeof item === 'string') return { id: `q${idx + 1}`, question: item, required: true };
+              if (item && typeof item === 'object') {
+                return {
+                  id: String(item.id || `q${idx + 1}`),
+                  question: String(item.question || item.text || '').trim(),
+                  context: item.context ? String(item.context) : '',
+                  required: item.required !== false,
+                  type: item.type ? String(item.type) : 'text',
+                  options: Array.isArray(item.options) ? item.options.map(String) : [],
+                  answer: item.answer != null ? String(item.answer) : '',
+                };
+              }
+              return null;
+            })
+            .filter((x) => x && x.question);
+        }
+        return [];
+      }
+
+      function renderQuestions(questions) {
+        pendingQuestions = normalizeQuestions(questions);
+        if (!pendingQuestions.length) {
+          questionsForm.innerHTML = '<div style="font-size:12px;color:var(--vscode-descriptionForeground)">No open questions.</div>';
+          applyAnswersBtn.style.display = 'none';
+          if (toggleQuestionsBtn) toggleQuestionsBtn.style.display = 'none';
+          return;
+        }
+
+        if (toggleQuestionsBtn) toggleQuestionsBtn.style.display = 'inline-flex';
+
+        const blocks = pendingQuestions
+          .slice(0, 12)
+          .map((q) => {
+            const label = escapeHtml(q.question);
+            const help = q.context ? `<div class="help">${escapeHtml(q.context)}</div>` : '';
+            const value = escapeHtml(q.answer || '');
+            const requiredMark = q.required ? '<span style="color:#ff6b6b">*</span>' : '';
+            return `
+              <div>
+                <label for="${escapeHtml(q.id)}">${label} ${requiredMark}</label>
+                <textarea id="${escapeHtml(q.id)}" data-question-id="${escapeHtml(q.id)}" rows="2" placeholder="Type your answer…">${value}</textarea>
+                ${help}
+              </div>
+            `.trim();
+          });
+
+        questionsForm.innerHTML = blocks.join('');
+        applyAnswersBtn.style.display = 'inline-flex';
+      }
+
+      if (toggleQuestionsBtn && questionsPanel) {
+        toggleQuestionsBtn.addEventListener('click', () => {
+          const collapsed = questionsPanel.classList.toggle('collapsed');
+          toggleQuestionsBtn.textContent = collapsed ? 'Expand' : 'Collapse';
+        });
+      }
+
+      function nowIsoShort() {
+        const d = new Date();
+        return d.toISOString().replace('T', ' ').slice(0, 16);
+      }
+
+      function extractTitle(markdown) {
+        const m = String(markdown || '').match(/^\s*#\s+(.+)\s*$/m);
+        return (m && m[1] ? m[1] : 'BRD').trim().slice(0, 48);
+      }
+
+      function nextVersionLabel() {
+        const latest = versions[0] && versions[0].versionLabel;
+        const m = typeof latest === 'string' ? latest.match(/^v(\d+)\.(\d+)/i) : null;
+        if (!m) return 'v0.1';
+        const major = Number(m[1] || 0);
+        const minor = Number(m[2] || 0);
+        return `v${major}.${minor + 1}`;
+      }
+
+      function addVersionSnapshot(content, { source = 'agent', versionLabel: forcedVersionLabel } = {}) {
+        const title = extractTitle(content);
+        const existing = versions.find((v) => v.content === content);
+        if (existing) {
+          activeVersionId = existing.id;
+          saveState();
+          return;
+        }
+        const id = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+        const versionLabel = (forcedVersionLabel && String(forcedVersionLabel).trim()) || nextVersionLabel();
+        const snapshot = { id, title, versionLabel, updatedAt: nowIsoShort(), source, content };
+        versions.unshift(snapshot);
+        activeVersionId = id;
+        saveState();
+        renderVersionTabs();
+        versionTag.textContent = versionLabel;
+      }
+
+      function setActiveVersion(id) {
+        const v = versions.find((x) => x.id === id);
+        if (!v) return;
+        activeVersionId = v.id;
+        lastDocText = currentDocText;
+        currentDocText = v.content;
+        saveState();
+        renderDoc(currentDocText);
+        renderVersionTabs();
+        versionTag.textContent = v.versionLabel || 'v0.1';
+      }
+
+      function renderVersionTabs() {
+        if (!versions.length) {
+          versionTabs.innerHTML = '<span style="font-size:12px;color:var(--vscode-descriptionForeground)">No versions yet</span>';
+          return;
+        }
+        const chips = versions.slice(0, 8).map((v) => {
+          const active = v.id === activeVersionId;
+          return `<button type="button" data-version-id="${v.id}" class="tab ${active ? 'active' : ''}" title="${escapeHtml(v.title)} • ${escapeHtml(v.updatedAt)}">${escapeHtml(v.versionLabel)}</button>`;
+        });
+        versionTabs.innerHTML = chips.join('');
+        versionTabs.querySelectorAll('[data-version-id]').forEach((btn) => {
+          btn.addEventListener('click', () => setActiveVersion(btn.getAttribute('data-version-id')));
+        });
+      }
+
+      function sectionContent(markdown, headerRegex) {
+        const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+        let start = -1;
+        for (let i = 0; i < lines.length; i++) {
+          if (headerRegex.test(lines[i])) {
+            start = i + 1;
+            break;
+          }
+        }
+        if (start === -1) return null;
+        const content = [];
+        for (let i = start; i < lines.length; i++) {
+          if (/^\s*##\s+/.test(lines[i]) || /^\s*#\s+/.test(lines[i])) break;
+          content.push(lines[i]);
+        }
+        return content.join('\n').trim();
+      }
+
+      function ragStatus(sectionText) {
+        const s = String(sectionText || '').trim();
+        if (!s) return 'red';
+        if (/\bTBD\b|\bTODO\b|\bUNKNOWN\b/i.test(s)) return 'amber';
+        if (s.length < 80) return 'amber';
+        return 'green';
+      }
+
+      function renderChecklist(markdown) {
+        const items = [
+          { key: 'Prob', label: 'Problem', re: /^\s*##\s+2\.?\s*Problem\b|^\s*##\s+Problem\b/im },
+          { key: 'AsIs', label: 'Current State', re: /^\s*##\s+3\.?\s*Current State\b|^\s*##\s+Current State\b/im },
+          { key: 'ToBe', label: 'Goals', re: /^\s*##\s+4\.?\s*Goals?\b|^\s*##\s+Goals?\b/im },
+          { key: 'Stake', label: 'Stakeholders', re: /^\s*##\s+5\.?\s*Stakeholders\b|^\s*##\s+Stakeholders\b/im },
+          { key: 'Scope', label: 'Scope', re: /^\s*##\s+6\.?\s*Scope\b|^\s*##\s+Scope\b/im },
+          { key: 'Req', label: 'Reqs', re: /^\s*##\s+8\.?\s*Business Requirements\b|^\s*##\s+Business Requirements\b/im },
+          { key: 'NFR', label: 'NFRs', re: /^\s*##\s+9\.?\s*Non-Functional\b|^\s*##\s+Non-Functional\b/im },
+          { key: 'Metrics', label: 'Metrics', re: /^\s*##\s+10\.?\s*Success Metrics\b|^\s*##\s+Success Metrics\b/im },
+          { key: 'Risks', label: 'Risks', re: /^\s*##\s+11\.?\s*Risks\b|^\s*##\s+Risks\b/im },
+        ];
+        const statuses = items.map((it) => ragStatus(sectionContent(markdown, it.re)));
+        const green = statuses.filter((s) => s === 'green').length;
+        const amber = statuses.filter((s) => s === 'amber').length;
+        const red = statuses.filter((s) => s === 'red').length;
+        checklist.textContent = `RAG: ${green}G ${amber}A ${red}R`;
+      }
+
+      function markdownToHtml(markdown) {
+        const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+        const out = [];
+        let inCode = false;
+        let codeLang = '';
+        let listType = null;
+        const closeList = () => {
+          if (listType) {
+            out.push(`</${listType}>`);
+            listType = null;
+          }
+        };
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i] ?? '';
+          if (line.trim().startsWith('```')) {
+            if (!inCode) {
+              closeList();
+              inCode = true;
+              codeLang = line.trim().slice(3).trim();
+              out.push(`<pre><code data-lang="${escapeHtml(codeLang)}">`);
+            } else {
+              inCode = false;
+              out.push(`</code></pre>`);
+              codeLang = '';
+            }
+            continue;
+          }
+          if (inCode) {
+            out.push(escapeHtml(line));
+            continue;
+          }
+          if (/^\s*---\s*$/.test(line)) {
+            closeList();
+            out.push('<hr />');
+            continue;
+          }
+          const h1 = line.match(/^\s*#\s+(.*)$/);
+          if (h1) {
+            closeList();
+            out.push(`<h1>${escapeHtml(h1[1].trim())}</h1>`);
+            continue;
+          }
+          const h2 = line.match(/^\s*##\s+(.*)$/);
+          if (h2) {
+            closeList();
+            out.push(`<h2>${escapeHtml(h2[1].trim())}</h2>`);
+            continue;
+          }
+          const h3 = line.match(/^\s*###\s+(.*)$/);
+          if (h3) {
+            closeList();
+            out.push(`<h3>${escapeHtml(h3[1].trim())}</h3>`);
+            continue;
+          }
+          const ul = line.match(/^\s*[-*]\s+(.*)$/);
+          if (ul) {
+            if (listType !== 'ul') {
+              closeList();
+              listType = 'ul';
+              out.push('<ul>');
+            }
+            out.push(`<li>${escapeHtml(ul[1])}</li>`);
+            continue;
+          }
+          const ol = line.match(/^\s*\d+\.\s+(.*)$/);
+          if (ol) {
+            if (listType !== 'ol') {
+              closeList();
+              listType = 'ol';
+              out.push('<ol>');
+            }
+            out.push(`<li>${escapeHtml(ol[1])}</li>`);
+            continue;
+          }
+          if (line.trim().length === 0) {
+            closeList();
+            out.push('');
+            continue;
+          }
+          closeList();
+          out.push(`<p>${escapeHtml(line.trim())}</p>`);
+        }
+        closeList();
+        if (inCode) out.push(`</code></pre>`);
+        return out.join('\n');
+      }
+
+      function buildSimpleDiffHtml(oldText, newText) {
+        const oldLines = String(oldText || '').split(/\r?\n/);
+        const newLines = String(newText || '').split(/\r?\n/);
+        const oldSet = new Set(oldLines.filter((l) => l.trim().length > 0));
+        const newSet = new Set(newLines.filter((l) => l.trim().length > 0));
+        const added = [];
+        for (const line of newLines) {
+          if (line.trim().length === 0) {
+            added.push('');
+            continue;
+          }
+          if (!oldSet.has(line)) added.push(`<span class="diff-added">${escapeHtml(line)}</span>`);
+          else added.push(escapeHtml(line));
+        }
+        const removedLines = oldLines.filter((l) => l.trim().length > 0 && !newSet.has(l));
+        const removedHtml =
+          removedLines.length === 0
+            ? '<p style="color:var(--vscode-descriptionForeground)">No removed lines detected.</p>'
+            : `<pre>${removedLines
+                .slice(0, 200)
+                .map((l) => `<span class="diff-removed">${escapeHtml(l)}</span>`)
+                .join('\n')}</pre>`;
+        return `
+          <div>
+            <h2>Current (highlighted additions)</h2>
+            <pre>${added.join('\n')}</pre>
+            <h2 style="margin-top:14px">Removed (best-effort)</h2>
+            ${removedHtml}
+          </div>
+        `.trim();
+      }
+
+      function renderDoc(text) {
+        if (!text) {
+          docNormal.innerHTML = '<p style="color:var(--vscode-descriptionForeground)">No document yet. Ask the agent to generate a BRD.</p>';
+          docDiff.innerHTML = '<p style="color:var(--vscode-descriptionForeground)">Diff view will appear after updates.</p>';
+          renderChecklist('');
+          return;
+        }
+        docNormal.innerHTML = markdownToHtml(text);
+        if (!lastDocText || lastDocText === text) {
+          docDiff.innerHTML = '<p style="color:var(--vscode-descriptionForeground)">No changes to diff yet.</p>';
+        } else {
+          docDiff.innerHTML = buildSimpleDiffHtml(lastDocText, text);
+        }
+        renderChecklist(text);
+      }
+
+      function appendBubble({ role, text, isTyping = false, isError = false }) {
+        const row = document.createElement('div');
+        row.className = `msg ${role}`;
+        const bubble = document.createElement('div');
+        bubble.className = `bubble ${role} ${isError ? 'error' : ''}`;
+        bubble.textContent = isTyping ? 'Thinking…' : String(text || '');
+        row.appendChild(bubble);
+        chat.appendChild(row);
+        chat.scrollTop = chat.scrollHeight;
+        return { row, bubble };
+      }
+
+      function setStatus(meta) {
+        if (!meta) return;
+        const sessionId = meta.sessionId;
+        const lastSelectedAgent = meta.lastSelectedAgent;
+        engineStatus.textContent = 'AI Engine';
+        if (sessionId) {
+          sessionStatus.textContent = `Session: ${sessionId}${lastSelectedAgent ? ` • Agent: ${lastSelectedAgent}` : ''}`;
+        } else {
+          sessionStatus.textContent = 'Session: -';
+        }
+      }
+
+      function agentSummaryText({ brdMarkdown, questions, mode, versionLabel } = {}) {
+        const qCount = Array.isArray(questions) ? questions.length : 0;
+        if (brdMarkdown && String(brdMarkdown).trim()) {
+          return `BRD updated${versionLabel ? ` (${versionLabel})` : ''}. ${qCount ? `Open questions: ${qCount}.` : 'No open questions.'}`;
+        }
+        if (qCount) {
+          return `I need ${qCount} answers to complete the BRD. Fill them in on the right, then click “Apply Answers”.`;
+        }
+        return mode ? `Response received (${mode}).` : 'Response received.';
+      }
+
+      async function sendMessage(text) {
+        const normalized = String(text || '').trim();
+        if (!normalized) return;
+        const isAsk = normalized.toLowerCase().startsWith('/ask ');
+        const userText = isAsk ? normalized.slice(5) : normalized;
+        const isUpdate = !isAsk && currentDocText && currentDocText.trim().length > 0;
+
+        const jsonContract = [
+          'Return STRICT JSON only (no markdown fences, no commentary).',
+          'JSON schema:',
+          '{',
+          '  "mode": "questions" | "brd",',
+          '  "versionLabel": "v0.1" (optional),',
+          '  "changelog": ["..."] (optional),',
+          '  "brdMarkdown": "..." (string; full BRD markdown when available),',
+          '  "questions": [',
+          '    {"id":"q1","question":"...","context":"...","required":true}',
+          '  ]',
+          '}',
+          'Rules:',
+          '- If you are still gathering requirements, set mode="questions" and return questions (brdMarkdown may be empty or a skeleton).',
+          '- If you can generate/update the BRD, set mode="brd" and return brdMarkdown as the full document using the BRD Template (Strict).',
+        ].join('\n');
+
+        const effectivePrompt = isUpdate
+          ? [
+              jsonContract,
+              '',
+              'Update the BRD below using the new information.',
+              'Keep the BRD Template (Strict) section headings unchanged.',
+              'Increment the version and include a short changelog at the top of the document control section.',
+              '',
+              'BRD (current):',
+              '```markdown',
+              currentDocText,
+              '```',
+              '',
+              'New information from user:',
+              userText,
+            ].join('\n')
+          : !isAsk
+            ? [
+                jsonContract,
+                '',
+                'Create a BRD using the BRD Template (Strict).',
+                'Include **TBD** for unknowns and ask questions for missing information.',
+                '',
+                'Initiative context:',
+                userText,
+              ].join('\n')
+            : userText;
+
+        appendBubble({ role: 'user', text: userText });
+        const typing = appendBubble({ role: 'agent', text: '...', isTyping: true });
+        waiting = true;
+
+        vscode.postMessage({ type: 'sendPrompt', prompt: effectivePrompt });
+
+        // The response will be handled by window message handler.
+        typing.bubble.dataset.typing = '1';
+      }
+
+      function wireButtons() {
+        document.querySelectorAll('[data-quick]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const mode = btn.getAttribute('data-quick');
+            const prompt =
+              mode === 'gather'
+                ? 'Gather business requirements first. Ask me the key business questions you need to create a BRD.'
+                : mode === 'brief'
+                  ? 'Create a BRD Brief for this initiative and list TBDs and open questions. Keep it business-first (no deep technical design yet).'
+                  : 'Generate a full BRD in Markdown using the BRD Template (Strict). Include examples in each section and mark unknowns as **TBD**.';
+            promptInput.value = promptInput.value.trim() ? `${prompt}\n\n${promptInput.value}` : prompt;
+            promptInput.focus();
+          });
+        });
+
+        document.querySelectorAll('[data-template]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const t = btn.getAttribute('data-template');
+            const prompt =
+              t === 'ecommerce'
+                ? 'I want to build an e-commerce app. Help me gather business requirements, then generate a BRD using the BRD Template (Strict).'
+                : t === 'fintech'
+                  ? 'I want to build a fintech platform. Help me gather business requirements, then generate a BRD using the BRD Template (Strict).'
+                  : 'I want to build a SaaS portal. Help me gather business requirements, then generate a BRD using the BRD Template (Strict).';
+            promptInput.value = prompt;
+            promptInput.focus();
+          });
+        });
+
+        document.getElementById('newProject').addEventListener('click', () => {
+          chat.innerHTML = '';
+          lastDocText = '';
+          currentDocText = '';
+          versions = [];
+          activeVersionId = null;
+          saveState();
+          renderVersionTabs();
+          renderDoc('');
+          renderQuestions([]);
+          sessionStatus.textContent = 'Session: -';
+          versionTag.textContent = 'v0.1';
+          vscode.postMessage({ type: 'resetSession' });
+          appendBubble({ role: 'agent', text: 'New project started. Share your initiative and I’ll guide you.' });
+        });
+
+        downloadBtn.addEventListener('click', () => {
+          const text = currentDocText || '';
+          if (!text.trim()) return;
+          vscode.postMessage({ type: 'download', content: text, suggestedName: 'brd.md' });
+        });
+
+        diffToggle.addEventListener('change', () => {
+          const showDiff = !!diffToggle.checked;
+          docDiff.style.display = showDiff ? 'block' : 'none';
+          docNormal.style.display = showDiff ? 'none' : 'block';
+        });
+      }
+
+      applyAnswersBtn.addEventListener('click', async () => {
+        if (!pendingQuestions.length) return;
+        const answers = [];
+        questionsForm.querySelectorAll('[data-question-id]').forEach((el) => {
+          const id = el.getAttribute('data-question-id');
+          const value = (el.value || '').trim();
+          if (id) answers.push({ id, answer: value });
+        });
+
+        const missingRequired = pendingQuestions.some((q) => q.required && !answers.find((a) => a.id === q.id && a.answer));
+        if (missingRequired) {
+          appendBubble({ role: 'agent', text: 'Some required answers are missing. Please fill all questions marked *.', isError: true });
+          return;
+        }
+
+        const merged = pendingQuestions.map((q) => {
+          const a = answers.find((x) => x.id === q.id)?.answer || '';
+          return `- ${q.question}\n  Answer: ${a || '**TBD**'}`;
+        });
+
+        const msg = ['Answers to open questions:', ...merged].join('\n');
+        await sendMessage(msg);
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = promptInput.value.trim();
+        if (!text || waiting) return;
+        promptInput.value = '';
+        await sendMessage(text);
+      });
+
+      window.addEventListener('message', (event) => {
+        const message = event.data || {};
+        if (message.type === 'error') {
+          waiting = false;
+          appendBubble({ role: 'agent', text: message.error || 'Error', isError: true });
+          return;
+        }
+        if (message.type === 'meta') {
+          setStatus(message.meta);
+          return;
+        }
+        if (message.type === 'reply') {
+          waiting = false;
+          setStatus(message.meta);
+
+          const typing = Array.from(chat.querySelectorAll('[data-typing="1"]')).pop();
+          if (typing) typing.textContent = '';
+
+          const raw = String(message.reply || '');
+          const payload = tryExtractJson(raw);
+          const brdMarkdown = payload?.brdMarkdown != null ? String(payload.brdMarkdown) : '';
+          const questions = normalizeQuestions(payload?.questions);
+          const mode = payload?.mode ? String(payload.mode) : null;
+          const versionLabel = payload?.versionLabel ? String(payload.versionLabel) : null;
+
+          if (payload && (brdMarkdown || questions.length || mode)) {
+            appendBubble({ role: 'agent', text: agentSummaryText({ brdMarkdown, questions, mode, versionLabel }) });
+            renderQuestions(questions);
+            if (brdMarkdown && looksLikeMarkdownDoc(brdMarkdown)) {
+              lastDocText = currentDocText;
+              currentDocText = brdMarkdown;
+              saveState();
+              renderDoc(currentDocText);
+              addVersionSnapshot(currentDocText, { source: 'agent', versionLabel });
+            }
+          } else {
+            appendBubble({ role: 'agent', text: raw || 'No reply' });
+            if (looksLikeMarkdownDoc(raw)) {
+              renderQuestions([]);
+              lastDocText = currentDocText;
+              currentDocText = raw;
+              saveState();
+              renderDoc(currentDocText);
+              addVersionSnapshot(currentDocText, { source: 'agent' });
+            }
+          }
+          return;
+        }
+      });
+
+      // Init
+      loadState();
+      renderVersionTabs();
+      if (versions.length) {
+        setActiveVersion(activeVersionId || versions[0].id);
+      } else {
+        renderDoc('');
+      }
+      renderQuestions([]);
+      wireButtons();
+
+      appendBubble({
+        role: 'agent',
+        text: 'Share your initiative in 2–5 sentences (who it’s for, what problem, desired outcome). I’ll ask business questions first, then generate a BRD Brief or full BRD.\n\nTip: once a BRD exists, your next messages update it automatically. Use “/ask …” to ask questions without updating the document.'
+      });
+    </script>
+  </body>
+</html>

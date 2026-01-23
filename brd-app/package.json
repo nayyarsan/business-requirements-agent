@@ -1,0 +1,14 @@
+{
+  "name": "brd-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "bun run ./server.js",
+    "cli": "bun run ./index.js"
+  },
+  "dependencies": {
+    "@github/copilot-sdk": "^0.1.0",
+    "yaml": "^2.3.1"
+  }
+}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BRD Creator Dashboard - Diff View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0066FF",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body { font-family: 'Inter', sans-serif; }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; }
+        #sidebar-toggle:checked ~ aside { width: 64px; }
+        #sidebar-toggle:checked ~ aside .sidebar-content { display: none; }
+        #sidebar-toggle:checked ~ aside .sidebar-collapsed-icons { display: flex; }.diff-added { background-color: #dcfce7; color: #166534; text-decoration: none; }
+        .dark .diff-added { background-color: #064e3b; color: #ecfdf5; }
+        .diff-removed { background-color: #fee2e2; color: #991b1b; text-decoration: line-through; }
+        .dark .diff-removed { background-color: #7f1d1d; color: #fef2f2; }#diff-toggle:checked ~ .document-container .normal-view { display: none; }
+        #diff-toggle:not(:checked) ~ .document-container .diff-view { display: none; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between px-6 sticky top-0 z-20">
+<div class="flex items-center gap-3">
+<label class="p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer transition-colors" for="sidebar-toggle">
+<span class="material-symbols-outlined">menu</span>
+</label>
+<div class="bg-primary p-2 rounded-lg ml-1">
+<span class="material-symbols-outlined text-white text-[20px]">description</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">BRD Creator</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border border-slate-200 dark:border-slate-800">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE-9Yt3AndJ01TxzJ_fIFF6jRFXYAZZ6u6UNIimPufyfCOSYpGXt40VUCjbLogYuXjy6hc-JVDnYOxe53urj8TduBAsCcJ2ausGZfHdf67IDyFIndrCw_STxYlw8Ru8vL1HWtAuwhWKIxPRXQE7LhOmVFOJ8c3PhIuhmKMDU-4uo10FAHuyI5iPmCl0Gv4YxSiKq0svdCFEVqv0ad1bAxC-ZMA34G-6wy2xEM9V8KncTUhaQLTexSsUO0EoxFoHNdM7N0UuDwBJZA"/>
+</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden relative">
+<input class="hidden peer" id="sidebar-toggle" type="checkbox"/>
+<aside class="w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 ease-in-out z-10 peer-checked:w-16">
+<div class="sidebar-content flex flex-col flex-1 overflow-hidden">
+<div class="p-4 space-y-6 overflow-y-auto custom-scrollbar">
+<div>
+<h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 mb-3">Templates</h3>
+<div class="space-y-1">
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group text-left">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">shopping_cart</span>
+<span>E-commerce App</span>
+</button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group text-left">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">account_balance_wallet</span>
+<span>Fintech Platform</span>
+</button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group text-left">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">dashboard_customize</span>
+<span>SaaS Portal</span>
+</button>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between px-2 mb-3">
+<h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Document History</h3>
+<span class="material-symbols-outlined text-sm text-slate-400 cursor-pointer">history</span>
+</div>
+<div class="space-y-1">
+<button class="w-full flex flex-col px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-left">
+<span class="font-medium truncate">SightWord Hero</span>
+<span class="text-[11px] text-slate-400 mt-0.5">Updated 2m ago</span>
+</button>
+<button class="w-full flex flex-col px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left">
+<span class="font-medium truncate">Customer CRM 2.0</span>
+<span class="text-[11px] text-slate-400 mt-0.5">3 days ago</span>
+</button>
+<button class="w-full flex flex-col px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left">
+<span class="font-medium truncate">AI Content Engine</span>
+<span class="text-[11px] text-slate-400 mt-0.5">1 week ago</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-auto p-4 border-t border-slate-200 dark:border-slate-800">
+<button class="w-full flex items-center justify-center gap-2 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-lg">add</span>
+<span>New Project</span>
+</button>
+</div>
+</div>
+<div class="hidden peer-checked:flex flex-col items-center pt-4 gap-6 flex-1">
+<span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer">auto_awesome_motion</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer">history</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer mt-auto mb-6">add_circle</span>
+</div>
+</aside>
+<div class="flex-1 flex overflow-hidden">
+<section class="w-1/2 flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+<div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-lg">smart_toy</span>
+</div>
+<div class="space-y-4 max-w-[85%]">
+<div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none">
+<p class="text-sm leading-relaxed">I've drafted the Technical Specifications section including React Native and cloud sync. Should I also include a detailed section on <strong>Offline Data Persistence</strong>?</p>
+</div>
+<div class="flex flex-wrap gap-2 pt-1">
+<button class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-medium text-primary hover:bg-primary hover:text-white transition-all">Yes, add this section</button>
+<button class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">No, keep current</button>
+<button class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">Tell me more</button>
+</div>
+</div>
+</div>
+<div class="flex gap-4 flex-row-reverse">
+<div class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<div class="max-w-[85%] bg-primary text-white p-4 rounded-2xl rounded-tr-none shadow-sm">
+<p class="text-sm">Please add the offline mode support and mention it in the technical specifications as well.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-lg">smart_toy</span>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none">
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
+<span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+<span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+<div class="relative flex items-end gap-3 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-primary/20 transition-all">
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-sm resize-none custom-scrollbar py-2 px-3 placeholder-slate-400 dark:placeholder-slate-500" placeholder="Ask the BRD agent a question..." rows="3"></textarea>
+<button class="bg-primary hover:bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</section>
+<section class="w-1/2 flex flex-col bg-slate-50 dark:bg-slate-950 relative">
+<input class="hidden peer/diff" id="diff-toggle" type="checkbox"/>
+<div class="h-14 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Preview</span>
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+</div>
+<label class="flex items-center gap-2 cursor-pointer select-none" for="diff-toggle">
+<div class="relative w-8 h-4 bg-slate-200 dark:bg-slate-700 rounded-full transition-colors peer-checked/diff:bg-primary">
+<div class="absolute left-0.5 top-0.5 w-3 h-3 bg-white rounded-full transition-transform peer-checked/diff:translate-x-4"></div>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Diff View</span>
+</label>
+</div>
+<button class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">file_download</span>
+                    Download
+                </button>
+</div>
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar document-container">
+<div class="max-w-2xl mx-auto bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 min-h-[1100px] p-10 prose dark:prose-invert prose-slate">
+<div class="normal-view space-y-6">
+<h1 class="text-3xl font-bold border-b border-slate-100 dark:border-slate-800 pb-4">Business Requirement Document: SightWord Hero</h1>
+<h2 class="text-xl">1. Project Overview</h2>
+<p>SightWord Hero is a mobile-first educational application designed to help children master sight words through gamified, Duolingo-style micro-learning sessions.</p>
+<h2 class="text-xl">3. Key Functional Requirements</h2>
+<div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary p-4 my-4 not-prose">
+<ul class="list-disc ml-5 text-sm space-y-1 text-slate-700 dark:text-slate-300">
+<li>Gamified word recognition modules</li>
+<li>Parent dashboard for progress tracking</li>
+<li>Offline mode support for learning on the go</li>
+</ul>
+</div>
+<h2 class="text-xl">5. Technical Specifications</h2>
+<p>The application will be developed using a cross-platform framework (React Native) to ensure consistency across iOS and Android devices. Data will be synced via a secure cloud backend.</p>
+</div>
+<div class="diff-view space-y-6">
+<h1 class="text-3xl font-bold border-b border-slate-100 dark:border-slate-800 pb-4">Business Requirement Document: SightWord Hero</h1>
+<h2 class="text-xl">1. Project Overview</h2>
+<p>SightWord Hero is a mobile-first educational application designed to help children master sight words through gamified, <span class="diff-removed">Flashcard-style</span> <span class="diff-added">Duolingo-style</span> micro-learning sessions.</p>
+<h2 class="text-xl">3. Key Functional Requirements</h2>
+<div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary p-4 my-4 not-prose">
+<ul class="list-disc ml-5 text-sm space-y-1 text-slate-700 dark:text-slate-300">
+<li>Gamified word recognition modules</li>
+<li>Parent dashboard for progress tracking</li>
+<li class="diff-added">Offline mode support for learning on the go</li>
+</ul>
+</div>
+<h2 class="text-xl">5. Technical Specifications</h2>
+<p>The application will be developed using a cross-platform framework (React Native) to ensure consistency across iOS and Android devices. <span class="diff-added">Local storage will utilize SQLite for offline data persistence.</span> Data will be synced via a secure cloud backend.</p>
+<div class="diff-added p-4 rounded border border-green-200 dark:border-green-900 mt-4 text-sm italic">
+                            New Section Proposed: 6. Security &amp; Data Privacy
+                        </div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer class="h-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between px-6 text-[10px] font-medium text-slate-400 uppercase tracking-widest z-20">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> AI Engine Online</span>
+<span class="flex items-center gap-1.5">Draft Autosaved: 2 min ago</span>
+</div>
+<div>v1.0.5-beta</div>
+</footer>
+
+</body></html>

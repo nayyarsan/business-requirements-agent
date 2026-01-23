@@ -1,0 +1,33 @@
+# Dependencies
+**/node_modules/
+
+# Bun
+**/.bun/
+
+# Env / secrets
+**/.env
+**/.env.*
+
+# Logs
+**/*.log
+
+# Archives / packages
+**/*.zip
+**/*.vsix
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Build outputs
+**/dist/
+**/build/
+
+# Local copies
+brdsample.txt

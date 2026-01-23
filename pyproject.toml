@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "business-requirements-agent"
+version = "0.1.0"
+description = "A custom Copilot agent for gathering and validating business requirements"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "github-copilot-sdk",
+    "typer",
+    "pydantic",
+    "rich",
+]
+
+[project.scripts]
+br-agent = "business_requirements_agent.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]

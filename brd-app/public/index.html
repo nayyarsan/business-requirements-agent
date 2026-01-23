@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>BRD Creator</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#0066FF',
+              'background-light': '#F9FAFB',
+              'background-dark': '#111827',
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif'],
+            },
+            borderRadius: {
+              DEFAULT: '0.5rem',
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      @layer base {
+        body {
+          font-family: 'Inter', sans-serif;
+        }
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e5e7eb;
+        border-radius: 10px;
+      }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #374151;
+      }
+      #sidebar-toggle:checked ~ aside {
+        width: 64px;
+      }
+      #sidebar-toggle:checked ~ aside .sidebar-content {
+        display: none;
+      }
+      #sidebar-toggle:checked ~ aside .sidebar-collapsed-icons {
+        display: flex;
+      }
+      .diff-added {
+        background-color: #dcfce7;
+        color: #166534;
+        text-decoration: none;
+      }
+      .dark .diff-added {
+        background-color: #064e3b;
+        color: #ecfdf5;
+      }
+      .diff-removed {
+        background-color: #fee2e2;
+        color: #991b1b;
+        text-decoration: line-through;
+      }
+      .dark .diff-removed {
+        background-color: #7f1d1d;
+        color: #fef2f2;
+      }
+      #diff-toggle:checked ~ .document-container .normal-view {
+        display: none;
+      }
+      #diff-toggle:not(:checked) ~ .document-container .diff-view {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen overflow-hidden flex flex-col">
+    <header
+      class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between px-6 sticky top-0 z-20"
+    >
+      <div class="flex items-center gap-3">
+        <label class="p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer transition-colors" for="sidebar-toggle">
+          <span class="material-symbols-outlined">menu</span>
+        </label>
+        <div class="bg-primary p-2 rounded-lg ml-1">
+          <span class="material-symbols-outlined text-white text-[20px]">description</span>
+        </div>
+        <h1 class="text-xl font-bold tracking-tight">BRD Creator</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <button
+          class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+          id="themeToggle"
+          type="button"
+        >
+          <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+          <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+        </button>
+        <div class="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div class="w-full h-full"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden relative min-h-0">
+      <input class="hidden peer" id="sidebar-toggle" type="checkbox" />
+      <aside
+        class="w-64 lg:w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 ease-in-out z-10 peer-checked:w-16 shrink-0"
+      >
+        <div class="sidebar-content flex flex-col flex-1 overflow-hidden">
+          <div class="p-4 space-y-6 overflow-y-auto custom-scrollbar">
+            <div>
+              <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 mb-3">Templates</h3>
+              <div class="space-y-1">
+                <button
+                  class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group text-left"
+                  data-template="ecommerce"
+                  type="button"
+                >
+                  <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">shopping_cart</span>
+                  <span>E-commerce App</span>
+                </button>
+                <button
+                  class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group text-left"
+                  data-template="fintech"
+                  type="button"
+                >
+                  <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">account_balance_wallet</span>
+                  <span>Fintech Platform</span>
+                </button>
+                <button
+                  class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors group text-left"
+                  data-template="saas"
+                  type="button"
+                >
+                  <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">dashboard_customize</span>
+                  <span>SaaS Portal</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between px-2 mb-3">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quick Actions</h3>
+                <span class="material-symbols-outlined text-sm text-slate-400">bolt</span>
+              </div>
+              <div class="space-y-1">
+                <button
+                  class="w-full flex flex-col px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-left hover:opacity-90"
+                  data-quick="gather"
+                  type="button"
+                >
+                  <span class="font-medium truncate">Gather Requirements</span>
+                  <span class="text-[11px] text-slate-400 mt-0.5">Ask business questions first</span>
+                </button>
+                <button
+                  class="w-full flex flex-col px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                  data-quick="brief"
+                  type="button"
+                >
+                  <span class="font-medium truncate">Generate BRD Brief</span>
+                  <span class="text-[11px] text-slate-400 mt-0.5">One-page summary + TBDs</span>
+                </button>
+                <button
+                  class="w-full flex flex-col px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                  data-quick="brd"
+                  type="button"
+                >
+                  <span class="font-medium truncate">Generate Full BRD</span>
+                  <span class="text-[11px] text-slate-400 mt-0.5">Markdown document output</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-auto p-4 border-t border-slate-200 dark:border-slate-800">
+            <button
+              class="w-full flex items-center justify-center gap-2 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              id="newProject"
+              type="button"
+            >
+              <span class="material-symbols-outlined text-lg">add</span>
+              <span>New Project</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hidden peer-checked:flex flex-col items-center pt-4 gap-6 flex-1 sidebar-collapsed-icons">
+          <span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer">auto_awesome_motion</span>
+          <span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer">bolt</span>
+          <span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer mt-auto mb-6">add_circle</span>
+        </div>
+      </aside>
+
+      <div class="flex-1 flex overflow-hidden min-w-0 flex-col lg:flex-row">
+        <section class="w-full lg:w-1/2 flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 min-w-0 min-h-0">
+          <div class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-6 custom-scrollbar min-h-0" id="chatMessages"></div>
+
+          <div class="p-3 lg:p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <form
+              class="relative flex items-end gap-3 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-primary/20 transition-all"
+              id="inputForm"
+            >
+              <textarea
+                class="flex-1 bg-transparent border-none focus:ring-0 text-sm resize-none custom-scrollbar py-2 px-3 placeholder-slate-400 dark:placeholder-slate-500"
+                id="promptInput"
+                placeholder="Paste business context or requirements…"
+                rows="3"
+              ></textarea>
+              <button class="bg-primary hover:bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center transition-colors shadow-sm" id="sendBtn" type="submit">
+                <span class="material-symbols-outlined">send</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section class="w-full lg:w-1/2 flex flex-col bg-slate-50 dark:bg-slate-950 relative min-w-0 min-h-0">
+          <input class="hidden peer/diff" id="diff-toggle" type="checkbox" />
+
+          <div class="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Preview</span>
+                <span class="w-2 h-2 bg-green-500 rounded-full" id="engineDot"></span>
+              </div>
+              <label class="flex items-center gap-2 cursor-pointer select-none" for="diff-toggle">
+                <div class="relative w-8 h-4 bg-slate-200 dark:bg-slate-700 rounded-full transition-colors peer-checked/diff:bg-primary">
+                  <div class="absolute left-0.5 top-0.5 w-3 h-3 bg-white rounded-full transition-transform peer-checked/diff:translate-x-4"></div>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Diff View</span>
+              </label>
+            </div>
+            <button
+              class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
+              id="downloadBtn"
+              type="button"
+            >
+              <span class="material-symbols-outlined text-lg">file_download</span>
+              Download
+            </button>
+          </div>
+
+          <div class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-6 py-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Versions</div>
+              <div class="flex-1 overflow-x-auto custom-scrollbar" id="versionTabs"></div>
+            </div>
+          </div>
+
+          <div class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-6 py-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Checklist</div>
+              <div class="flex-1 overflow-x-auto custom-scrollbar" id="checklist"></div>
+            </div>
+          </div>
+
+          <div class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-6 py-3" id="questionsPanel">
+            <div class="flex items-center justify-between gap-3">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Questions</div>
+              <button
+                class="hidden items-center gap-2 bg-primary text-white px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-blue-600 transition-colors"
+                id="applyAnswersBtn"
+                type="button"
+              >
+                <span class="material-symbols-outlined text-[18px]">task_alt</span>
+                Apply Answers
+              </button>
+            </div>
+            <form class="mt-3 space-y-3 max-h-56 overflow-y-auto custom-scrollbar pr-1" id="questionsForm">
+              <div class="text-xs text-slate-500">No open questions.</div>
+            </form>
+          </div>
+
+          <div class="flex-1 overflow-y-auto p-3 lg:p-4 custom-scrollbar document-container min-h-0">
+            <div class="max-w-2xl mx-auto bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 min-h-0 p-4 lg:p-6 prose prose-sm lg:prose-base dark:prose-invert prose-slate">
+              <div class="normal-view space-y-6" id="docNormal"></div>
+              <div class="diff-view space-y-6" id="docDiff"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer
+      class="h-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between px-6 text-[10px] font-medium text-slate-400 uppercase tracking-widest z-20"
+    >
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> <span id="engineStatus">AI Engine</span></span>
+        <span class="flex items-center gap-1.5" id="sessionStatus">Session: -</span>
+      </div>
+      <div id="versionTag">v0.1</div>
+    </footer>
+
+    <script>
+      // Optional config for static hosting (e.g., Vercel UI pointing to a separately hosted API)
+      // window.BRD_APP_CONFIG = { apiBaseUrl: "https://your-api.example.com" };
+    </script>
+    <script src="/app.js"></script>
+  </body>
+</html>
