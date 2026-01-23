@@ -1,4 +1,4 @@
-\# BRD Creator (Copilot Agent + Skills)
+# BRD Creator (Copilot Agent + Skills)
 
 Create decision-ready Business Requirements Documents (BRDs) using a custom GitHub Copilot agent and skills.
 
