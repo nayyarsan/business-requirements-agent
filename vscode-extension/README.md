@@ -2,13 +2,18 @@
 
 Create comprehensive Business Requirements Documents using GitHub Copilot as your AI business analyst.
 
+## Screenshot
+
+![BRD Creator dashboard](../brd-app/public/stitch-dashboard/screen.png)
+
 ## Features
 
-- **AI-Powered BRD Generation**: Uses GitHub Copilot with a custom business analyst agent
-- **Structured Templates**: Follows industry-standard BRD format
-- **Interactive Q&A**: Agent asks clarifying questions to ensure completeness
-- **Skills Integration**: Loads domain-specific skills for requirements gathering and structuring
-- **Local & Private**: Runs entirely in your VS Code with your own Copilot subscription
+- **Rich dashboard**: Chat + BRD preview side-by-side
+- **Versions & diff view**: Track BRD iterations and review changes
+- **Interactive Q&A**: Answer open questions and apply updates
+- **Templates & quick actions**: Kickstart common initiatives
+- **Download**: Save the current BRD to a Markdown file
+- **Local & private**: Runs on your machine with your Copilot auth
 
 ## Prerequisites
 
@@ -44,8 +49,8 @@ Then press F5 in VS Code to launch the Extension Development Host.
 2. Copy the `.github/` folder (with agents and skills) to your workspace root
 3. Open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
 4. Run: **BRD Creator: Start New BRD**
-5. Answer the prompts
-6. Your BRD will be generated in a new Markdown document
+5. Use the dashboard to chat, review the BRD, and answer open questions
+6. Click **Download** to save the BRD to a `.md` file
 
 ### Commands
 
@@ -104,7 +109,7 @@ No settings required! The extension uses your existing Copilot authentication.
 
 ## Contributing
 
-This extension uses the GitHub Copilot SDK. See [extension source](https://github.com/your-org/brd-creator-extension) for details.
+Repo: https://github.com/nayyarsan/business-requirements-agent
 
 ## License
 
