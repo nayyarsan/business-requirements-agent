@@ -1,10 +1,27 @@
 # BRD Creator (Copilot Agent + Skills)
 
-Create decision-ready Business Requirements Documents (BRDs) using a custom GitHub Copilot agent and skills.
+**A VS Code extension that generates comprehensive Business Requirements Documents (BRDs) using the GitHub Copilot SDK.**
+
+This project demonstrates how to build intelligent, domain-specific tools by leveraging [GitHub Copilot SDK](https://github.com/github/copilot-sdk) — a programmable layer that enables you to plan, invoke tools, edit files, and run commands as an agentic execution loop embedded in any application.
+
+## About the GitHub Copilot SDK
+
+The GitHub Copilot SDK (now in technical preview) removes the burden of building agentic workflows from scratch. It provides programmatic access to the same production-tested execution loop that powers GitHub Copilot CLI, allowing you to:
+
+- **Plan and execute** complex tasks with multi-turn conversations
+- **Integrate custom tools** and domain-specific skills
+- **Support multiple AI models** with GitHub authentication
+- **Manage context** intelligently across sessions
+- **Stream results** in real-time
+- **Leverage MCP server integration** for extensibility
+
+The BRD Creator demonstrates these capabilities by guiding users through an interactive requirements-gathering process and producing decision-ready documentation using structured prompts and a stable Markdown template.
 
 This repo includes:
+
 - A VS Code extension (recommended distribution model)
 - A local-only web app (useful for experimentation)
+- Custom agent and skills demonstrating the SDK's capabilities
 
 ## Screenshots
 
@@ -35,9 +52,12 @@ This repo includes:
 
 ## Prerequisites
 
-- GitHub Copilot subscription
+- GitHub Copilot subscription (or bring your own API key)
 - Copilot CLI installed + authenticated on this machine
 - For the web app: Bun installed
+- **Supported languages**: The SDK supports Node.js, Python, Go, and .NET
+
+Learn more about getting started with the [GitHub Copilot SDK](https://github.com/github/copilot-sdk).
 
 ## VS Code extension (recommended)
 
