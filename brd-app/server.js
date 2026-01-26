@@ -4,6 +4,7 @@ import * as path from 'path';
 import http from 'http';
 import { parse as parseYAML } from 'yaml';
 import { fileURLToPath } from 'url';
+import { getAgentReplyWithRepair } from './lib/agentReply.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -186,17 +187,27 @@ async function handleApiMessage(req, res) {
       return;
     }
 
-    const response = await session.sendAndWait({ prompt: message }, SEND_AND_WAIT_TIMEOUT_MS);
+    const result = await getAgentReplyWithRepair({
+      prompt: message,
+      session,
+      timeoutMs: SEND_AND_WAIT_TIMEOUT_MS,
+    });
+
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(
       JSON.stringify({
-        reply: response?.data?.content ?? null,
+        // When payloadValid=true, reply is a JSON string matching the UI contract.
+        // When payloadValid=false, reply is the raw model content (legacy fallback).
+        reply: result.reply,
         meta: {
           sessionId: session.sessionId,
           lastSelectedAgent,
           customAgentConfigured: agentConfig?.name ?? null,
-            bundledCliAvailable,
-            bundledCliPath,
+          bundledCliAvailable,
+          bundledCliPath,
+          payloadValid: result.payloadValid,
+          payloadErrors: result.payloadErrors,
+          payloadRepaired: result.payloadRepaired,
         },
       }),
     );

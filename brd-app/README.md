@@ -22,6 +22,22 @@ bun run .\server.js
 
 Open http://localhost:3000
 
+## Tests
+
+Run regression tests (does not require Bun):
+
+```powershell
+cd .\brd-app
+npm run test:node
+```
+
+If you have Bun installed:
+
+```powershell
+cd .\brd-app
+bun test
+```
+
 ## How it works
 
 ```text

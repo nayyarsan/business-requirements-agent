@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "bun run ./server.js",
-    "cli": "bun run ./index.js"
+    "cli": "bun run ./index.js",
+    "test": "bun test",
+    "test:node": "node --test test/*.test.js",
+    "test:all": "node --test test/*.test.js"
   },
   "dependencies": {
     "@github/copilot-sdk": "^0.1.0",
